@@ -22,8 +22,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Custom apps
-    'drf_yasg',
     'rest_framework',
+    'drf_yasg',
     'echo.apps.EchoConfig',
 ]
 
@@ -87,7 +87,11 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
     ],
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
 }
+
 
 SWAGGER_SETTINGS = {
    'SECURITY_DEFINITIONS': {

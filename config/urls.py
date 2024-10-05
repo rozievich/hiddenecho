@@ -17,17 +17,15 @@ schema_view = get_schema_view(
       terms_of_service="https://www.github.com/rozievich/hiddenecho/",
       contact=openapi.Contact(email="oybekrozievich@gmail.com")
    ),
-   public=False,
-   permission_classes=(permissions.IsAuthenticatedOrReadOnly,),
+   public=True,  # Bu yerda public=True
+   permission_classes=(permissions.AllowAny,),  # Hamma uchun ochiq
 )
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # path('api/', include('echo.urls')),
-    # Swagger URL'lari
+    path('api/', include('echo.urls')),
     path('swdoc/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
-    # JWT token olish va yangilash
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
