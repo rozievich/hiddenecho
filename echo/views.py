@@ -3,18 +3,17 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.permissions import IsAuthenticated
 
 from .models import CustomUser
 from .serializers import CustomUserModelSerializer
-from .permissions import IsOwnerPermission, IsAdminPermission
 
 
 class CustomUserModelViewSet(ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserModelSerializer
-    permission_classes = [IsAdminUser]
-    parser_classes = (IsAuthenticated, IsAdminUser)
+    permission_classes = (IsAuthenticated, )
+    parser_classes = (MultiPartParser, )
 
 
 class VerifyEmailView(APIView):
@@ -24,6 +23,6 @@ class VerifyEmailView(APIView):
             user.is_verified = True
             user.verification_token = ''
             user.save()
-            return Response({'message': 'Email tasdiqlandi!'}, status=status.HTTP_200_OK)
+            return Response({'message': 'Email verified!'}, status=status.HTTP_200_OK)
         except CustomUser.DoesNotExist:
-            return Response({'message': 'Noto‘g‘ri token!'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'message': 'Invalid token!'}, status=status.HTTP_400_BAD_REQUEST)
