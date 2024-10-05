@@ -12,3 +12,8 @@ class IsOwnerPermission(BasePermission):
 class IsAdminPermission(BasePermission):
     def has_permission(self, request, view):
         return request.user.is_authenticated and request.user.is_staff
+
+
+class IsVerifiedUser(BasePermission):
+    def has_permission(self, request, view):
+        return request.user and request.user.is_authenticated and request.user.is_verified

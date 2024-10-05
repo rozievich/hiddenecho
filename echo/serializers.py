@@ -2,7 +2,7 @@ from rest_framework import serializers
 from django.utils.crypto import get_random_string
 from django.core.mail import send_mail
 
-from .models import CustomUser
+from .models import CustomUser, Follow
 from config.settings import MAIN_HOST
 
 
@@ -34,7 +34,7 @@ class CustomUserModelSerializer(serializers.ModelSerializer):
         user.verification_token = token
         user.save()
 
-        verification_link = f"{MAIN_HOST}/verify-email/{token}/"
+        verification_link = f"{MAIN_HOST}/api/verify-email/{token}/"
 
         send_mail(
             'Tasdiqlash Emaili',
@@ -43,3 +43,26 @@ class CustomUserModelSerializer(serializers.ModelSerializer):
             [user.email],
             fail_silently=False,
         )
+
+
+class FollowModelSerializer(serializers.ModelSerializer):
+    follower = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
+    class Meta:
+        model = Follow
+        fields = ("id", "follower", "followed")
+
+
+    def validate(self, attrs):
+        follower = self.context['request'].user
+        followed = attrs.get('followed')
+
+        if not follower.is_verified:
+            raise serializers.ValidationError("User is not verified. Please verify your account.")
+
+        if not followed.is_verified:
+            raise serializers.ValidationError("The user you are trying to follow is not verified.")
+
+        if follower == followed:
+            raise serializers.ValidationError("A user cannot follow themselves.")
+        return attrs

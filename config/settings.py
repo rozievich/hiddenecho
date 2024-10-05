@@ -147,4 +147,4 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'oybekn033@gmail.com'
 EMAIL_HOST_PASSWORD = 'thmydwukzdpagory'
 
-MAIN_HOST = "http://127.0.0.1:8000"
+MAIN_HOST = "http://172.21.80.1:8000"
