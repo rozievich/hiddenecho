@@ -29,7 +29,7 @@ class VerifyEmailView(APIView):
             return Response({'message': 'Invalid token!'}, status=status.HTTP_400_BAD_REQUEST)
 
 
-class FollowAPIView(ModelViewSet):
+class FollowModelViewSet(ModelViewSet):
     queryset = Follow.objects.all()
     serializer_class = FollowModelSerializer
     permission_classes = (IsVerifiedUser, )

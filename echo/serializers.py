@@ -47,22 +47,27 @@ class CustomUserModelSerializer(serializers.ModelSerializer):
 
 class FollowModelSerializer(serializers.ModelSerializer):
     follower = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    follower_data = CustomUserModelSerializer(source='follower', read_only=True)
+    following = CustomUserModelSerializer()
 
     class Meta:
         model = Follow
-        fields = ("id", "follower", "followed")
-
+        fields = ('id', 'follower', 'follower_data', 'following', 'created_at')
 
     def validate(self, attrs):
         follower = self.context['request'].user
-        followed = attrs.get('followed')
+        following = attrs.get('following')
 
+        # Tekshirish: Follower foydalanuvchi tasdiqlanganmi?
         if not follower.is_verified:
             raise serializers.ValidationError("User is not verified. Please verify your account.")
 
-        if not followed.is_verified:
+        # Tekshirish: Following foydalanuvchi tasdiqlanganmi?
+        if not following.is_verified:
             raise serializers.ValidationError("The user you are trying to follow is not verified.")
 
-        if follower == followed:
+        # Tekshirish: O'zini o'zi follow qilmasligi uchun
+        if follower == following:
             raise serializers.ValidationError("A user cannot follow themselves.")
+        
         return attrs
